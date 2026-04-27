@@ -1,0 +1,55 @@
+steps:
+  - label: "e2e_tests_demo"
+    if: build.pull_request.id != null
+    commands:
+      - echo "Simulating E2E tests for PR..."
+      - echo "Running: yarn e2e:ci"
+      - echo "E2E tests passed"
+
+  - wait
+
+  - label: "build_demo"
+    if: build.pull_request.id != null || build.branch == "main"
+    commands:
+      - echo "Simulating build step..."
+      - echo "Running: .ci/build.sh"
+      - echo "Build completed"
+
+  - wait
+
+  - label: "sonarqube_demo"
+    if: build.pull_request.id != null
+    commands:
+      - echo "Simulating SonarQube scan..."
+      - echo "Running: sonar-scanner"
+      - echo "Quality scan passed"
+
+  - wait
+
+  - label: "test_deploy_connector_demo"
+    if: build.pull_request.id != null
+    commands:
+      - echo "Simulating test deploy for hmrc-connector"
+      - echo "No AWS calls made"
+      - echo "Test deployment complete"
+
+  - label: "test_deploy_connector_cancel_demo"
+    if: build.pull_request.id != null
+    commands:
+      - echo "Simulating test deploy for hmrc-connector-cancel"
+      - echo "No AWS calls made"
+      - echo "Test deployment complete"
+
+  - label: "deploy_connector_demo"
+    if: build.branch == "main"
+    commands:
+      - echo "Simulating production deploy for hmrc-connector"
+      - echo "DRY_RUN=false would be used in real pipeline"
+      - echo "No AWS calls made"
+
+  - label: "deploy_connector_cancel_demo"
+    if: build.branch == "main"
+    commands:
+      - echo "Simulating production deploy for hmrc-connector-cancel"
+      - echo "DRY_RUN=false would be used in real pipeline"
+      - echo "No AWS calls made"
